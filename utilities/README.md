@@ -5,6 +5,8 @@
 - [Utilities](#utilities)
   * [bucketfs_ls](#bucketfs_ls)
   * [check_connectivity](#check_connectivity)
+  * [create_bucket](#create_bucket)
+  * [delete_bucket](#delete_bucket)
   * [upload_github_release_file_to_bucketfs](#upload_github_release_file_to_bucketfs)
   * [language_info](#language_info)
   * [pub2slack](#pub2slack)
@@ -38,6 +40,43 @@ Usage:
 ```sql
 SELECT check_connectivity('oraclesrv1.company.com', '1521');
 ```
+
+## create_bucket
+([create_bucket](create_bucket.sql))
+
+You can use this UDF to create a Bucket in BucketFS.
+
+You need to create a connection with an url of the bucketFS and credentials for writing access, or with an url of the form
+"https(:)//user:pass@license_server/cluster1" (Other forms of connections might work but have not been tested).
+
+
+The UDF takes the name of the bucket, read- and write-passwords, a bool to indicate if the bucket should be 
+public accessible, an optional description or NULL and the name of your connection.
+
+Usage:
+```sql
+CREATE OR REPLACE CONNECTION BUCKET_CONNECTION TO 'https://user:pw@192.168.122.59/cluster1/bucketfs1';
+
+SELECT create_bucket('bucketname','readpassword','writepassword','false','Desciption', 'BUCKET_CONNECTION');
+```
+
+## delete_bucket
+([delete_bucket](delete_bucket.sql))
+
+You can use this UDF to delete an empty Bucket in BucketFS.
+
+You need to create a connection with an url of the bucket and credentials for writing access, or with an url of the form
+"https(:)//user:pass@license_server/cluster1", then give the name of the connection and the name of the bucket you want to delete as an argument in the UDF.
+(Other forms of connections might work but have not been tested)
+
+Usage:
+```sql
+CREATE OR REPLACE CONNECTION BUCKET_CONNECTION TO 'https://192.168.122.59/cluster1/bucketfs1'
+       USER 'user' IDENTIFIED BY 'pw' ;
+
+SELECT delete_bucket('bucketname', 'BUCKET_CONNECTION');   
+```
+
 
 ## upload_github_release_file_to_bucketfs
 ([upload_github_release_file_to_bucketfs.sql](upload_github_release_file_to_bucketfs.sql))
